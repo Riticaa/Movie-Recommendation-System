@@ -1,0 +1,16 @@
+env/
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+.ipynb_checkpoints/
+.vscode/
+.DS_Store
+similarity.pkl
+.streamlit/secrets.toml
