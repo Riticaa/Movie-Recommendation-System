@@ -10,11 +10,21 @@ from sklearn.metrics.pairwise import cosine_similarity
 from openai import OpenAI
 
 
+# ---------------- PAGE CONFIG ----------------
+
+st.set_page_config(
+    page_title="AI Movie Recommendation System",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
+
+
 # ---------------- API KEYS ----------------
 
 OPENROUTER_API_KEY = st.secrets["OPENROUTER_API_KEY"]
 
 OMDB_API_KEY = st.secrets["OMDB_API_KEY"]
+
 
 # ---------------- OPENROUTER CLIENT ----------------
 
@@ -26,7 +36,9 @@ client = OpenAI(
 
 # ---------------- LOAD DATA ----------------
 
-movies_dict = pickle.load(open('movies_dict.pkl', 'rb'))
+movies_dict = pickle.load(
+    open('movies_dict.pkl', 'rb')
+)
 
 movies = pd.DataFrame(movies_dict)
 
@@ -45,95 +57,203 @@ vectors = cv.fit_transform(
 similarity = cosine_similarity(vectors)
 
 
-# ---------------- PAGE CONFIG ----------------
-
-st.set_page_config(
-    page_title="AI Movie Recommendation System",
-    page_icon="🎬",
-    layout="wide"
-)
-
-
 # ---------------- CUSTOM CSS ----------------
 
-st.markdown(
-    """
-    <style>
+st.markdown("""
+<style>
 
-    .main {
-        background-color: #0E1117;
-        color: white;
-    }
-
-    .stApp {
-        background-color: #0E1117;
-    }
-
-    h1, h2, h3, h4 {
-        color: white;
-    }
-
-    .hero {
-        background: linear-gradient(
-            to right,
-            rgba(0,0,0,0.9),
-            rgba(0,0,0,0.4)
-        ),
-        url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba");
-
-        padding: 80px;
-        border-radius: 20px;
-        margin-bottom: 30px;
-        background-size: cover;
-        background-position: center;
-    }
-
-    .hero-title {
-        font-size: 50px;
-        font-weight: bold;
-        color: white;
-    }
-
-    .hero-subtitle {
-    font-size: 20px !important;
-    color: white !important;
-    margin-top: 10px !important;
-    font-weight: 400;
+html, body, [class*="css"] {
+    background-color: #0B0F19;
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
 }
 
-    .movie-card {
-        background-color: #1c1c1c;
-        padding: 15px;
-        border-radius: 15px;
-        text-align: center;
-        transition: 0.3s;
-        box-shadow: 0px 4px 15px rgba(0,0,0,0.5);
-        margin-bottom: 20px;
-    }
+.stApp {
+    background-color: #0B0F19;
+}
 
-    .movie-card:hover {
-        transform: scale(1.03);
-    }
+/* Hide Streamlit Branding */
 
-    .stButton>button {
-        background-color: #E50914;
-        color: white;
-        border-radius: 10px;
-        height: 3em;
-        width: 180px;
-        font-size: 16px;
-        border: none;
-    }
+#MainMenu {
+    visibility: hidden;
+}
 
-    .stButton>button:hover {
-        background-color: #ff1f1f;
-        color: white;
-    }
+footer {
+    visibility: hidden;
+}
 
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+header {
+    visibility: hidden;
+}
+
+/* Main Layout */
+
+.block-container {
+    padding-top: 1.5rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+/* Main Title */
+
+.main-title {
+    font-size: 52px;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.main-title span {
+    color: #E50914;
+}
+
+/* Hero Section */
+
+.hero {
+    background:
+    linear-gradient(
+        to right,
+        rgba(0,0,0,0.92),
+        rgba(0,0,0,0.55)
+    ),
+    url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba");
+
+    background-size: cover;
+    background-position: center;
+
+    border-radius: 24px;
+
+    padding: 80px;
+
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+.hero-title {
+    font-size: 64px;
+    font-weight: 800;
+    color: white;
+    line-height: 1.1;
+    max-width: 750px;
+}
+
+.hero-subtitle {
+    font-size: 20px;
+    color: #d1d1d1;
+    margin-top: 20px;
+    line-height: 1.7;
+    max-width: 700px;
+}
+
+/* Selectbox */
+
+.stSelectbox > div > div {
+    background-color: #151A24;
+    border: 1px solid #2B3240;
+    border-radius: 12px;
+}
+
+/* Input */
+
+.stTextInput > div > div > input {
+    background-color: #151A24 !important;
+    color: white !important;
+    border-radius: 12px !important;
+    border: 1px solid #2B3240 !important;
+}
+
+/* Buttons */
+
+.stButton > button {
+    background: linear-gradient(
+        90deg,
+        #E50914,
+        #ff3131
+    );
+
+    color: white;
+    border: none;
+
+    border-radius: 14px;
+
+    height: 50px;
+    width: 180px;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    transition: 0.3s;
+}
+
+.stButton > button:hover {
+    transform: scale(1.03);
+
+    box-shadow:
+    0px 0px 20px rgba(229,9,20,0.4);
+}
+
+/* Movie Card */
+
+.movie-card {
+    background: rgba(255,255,255,0.04);
+
+    border: 1px solid rgba(255,255,255,0.06);
+
+    border-radius: 18px;
+
+    padding: 15px;
+
+    margin-bottom: 20px;
+
+    backdrop-filter: blur(12px);
+
+    transition: 0.3s;
+}
+
+.movie-card:hover {
+    transform: translateY(-5px);
+
+    box-shadow:
+    0px 0px 25px rgba(229,9,20,0.15);
+}
+
+/* Movie Title */
+
+.movie-name {
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 12px;
+    margin-bottom: 8px;
+}
+
+/* Movie Info */
+
+.movie-info {
+    color: #d1d1d1;
+    font-size: 15px;
+    margin-bottom: 4px;
+}
+
+/* AI Box */
+
+.ai-box {
+    background: rgba(255,255,255,0.04);
+
+    border: 1px solid rgba(255,255,255,0.06);
+
+    border-radius: 18px;
+
+    padding: 25px;
+
+    margin-top: 20px;
+
+    font-size: 16px;
+
+    line-height: 1.8;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 
 # ---------------- FETCH MOVIE DETAILS ----------------
@@ -141,7 +261,7 @@ st.markdown(
 def fetch_movie_details(movie_name):
 
     url = (
-        f"http://www.omdbapi.com/?t={movie_name}"
+        f"http://www.omdbapi.com/?t={urllib.parse.quote(movie_name)}"
         f"&apikey={OMDB_API_KEY}"
     )
 
@@ -149,11 +269,17 @@ def fetch_movie_details(movie_name):
 
     poster = data.get('Poster')
 
-    rating = data.get('imdbRating')
+    if poster == "N/A" or poster is None:
 
-    genre = data.get('Genre')
+        poster = (
+            "https://via.placeholder.com/300x450?text=No+Image"
+        )
 
-    year = data.get('Year')
+    rating = data.get('imdbRating', 'N/A')
+
+    genre = data.get('Genre', 'N/A')
+
+    year = data.get('Year', 'N/A')
 
     return poster, rating, genre, year
 
@@ -236,23 +362,28 @@ def ask_ai(prompt):
     return completion.choices[0].message.content
 
 
-# ---------------- TITLE ----------------
+# ---------------- MAIN TITLE ----------------
 
-st.title("🎬 AI Movie Recommendation System")
+st.markdown("""
+<div class="main-title">
+AI Movie <span>Recommendation</span>
+</div>
+""", unsafe_allow_html=True)
 
 
-# ---------------- HERO BANNER ----------------
+# ---------------- HERO SECTION ----------------
 
 st.markdown("""
 <div class="hero">
     <h1 class="hero-title">
-        Unlimited Movies, AI Recommendations & Trailers
+        Discover Movies with AI
     </h1>
 
 
 </div>
 """, unsafe_allow_html=True)
-# ---------------- SELECT MOVIE ----------------
+
+# ---------------- MOVIE SELECT ----------------
 
 selected_movie_name = st.selectbox(
     "Search or Select a Movie",
@@ -262,7 +393,7 @@ selected_movie_name = st.selectbox(
 
 # ---------------- RECOMMEND BUTTON ----------------
 
-if st.button('Recommend'):
+if st.button("Recommend Movies"):
 
     (
         names,
@@ -286,34 +417,63 @@ if st.button('Recommend'):
 
             st.image(posters[idx])
 
-            st.subheader(names[idx])
-
-            st.write(
-                f"🔥 {similarity_scores[idx]}% Match"
-            )
-
-            st.write(
-                f"⭐ IMDb Rating: {ratings[idx]}"
-            )
-
-            st.write(
-                f"🎭 Genre: {genres[idx]}"
-            )
-
-            st.write(
-                f"📅 Year: {years[idx]}"
-            )
-
-            query = urllib.parse.quote(
-                names[idx] + " trailer"
-            )
-
-            youtube_search = (
-                f"https://www.youtube.com/results?search_query={query}"
+            st.markdown(
+                f"""
+                <div class="movie-name">
+                    {names[idx]}
+                </div>
+                """,
+                unsafe_allow_html=True
             )
 
             st.markdown(
-                f"[▶️ Watch Trailer]({youtube_search})"
+                f"""
+                <div class="movie-info">
+                    Match Score: {similarity_scores[idx]}%
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            st.markdown(
+                f"""
+                <div class="movie-info">
+                    IMDb Rating: {ratings[idx]}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            st.markdown(
+                f"""
+                <div class="movie-info">
+                    Genre: {genres[idx]}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            st.markdown(
+                f"""
+                <div class="movie-info">
+                    Release Year: {years[idx]}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            query = urllib.parse.quote(
+                names[idx] + " official trailer"
+            )
+
+            youtube_search = (
+                f"https://www.youtube.com/results?"
+                f"search_query={query}"
+            )
+
+            st.link_button(
+                "Watch Trailer",
+                youtube_search
             )
 
             st.markdown(
@@ -322,18 +482,23 @@ if st.button('Recommend'):
             )
 
 
-# ---------------- AI CHATBOT ----------------
+# ---------------- AI ASSISTANT ----------------
 
 st.markdown("---")
 
-st.header("🤖 AI Movie Assistant")
+st.header("AI Movie Assistant")
 
 user_prompt = st.text_input(
-    "Ask AI for movie suggestions"
+    "Ask anything about movies"
 )
 
 if st.button("Ask AI"):
 
     answer = ask_ai(user_prompt)
 
-    st.write(answer)
+    st.markdown(f"""
+    <div class="ai-box">
+
+    {answer}
+
+    """, unsafe_allow_html=True)
