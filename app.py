@@ -14,6 +14,7 @@ from openai import OpenAI
 
 st.set_page_config(
     page_title="AI Movie Recommendation System",
+    page_icon="🎥",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
